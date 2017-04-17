@@ -19,7 +19,7 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
 });
-
-http.listen(80, function(){
-  console.log('listen on *:80');
+var port = process.env.PORT || 3000;
+http.listen(port, function(){
+  console.log('listen on *:' + port);
 });
