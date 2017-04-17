@@ -20,6 +20,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(443, function(){
-  console.log('listen on *:443');
+http.listen(80, function(){
+  console.log('listen on *:80');
 });
