@@ -2,7 +2,7 @@ const ws = require('ws')
 
 const WebSocketServer = ws.Server
 const wss = new WebSocketServer({
-  port: 8000,
+  port: process.env.PORT || 8000,
   perMessageDeflate: {
     zlibDeflateOptions: {
       // See zlib defaults.
