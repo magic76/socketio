@@ -31,9 +31,7 @@ wss.on('connection', function connection(ws) {
     const isJsonString = data[0] === '{' || data[0] === '['
     wss.clients.forEach(function each(client) {
       if (client.readyState === ws.OPEN) {
-        setTimeout(() => {
-          client.send(isJsonString ? data.toString() : data.toString())
-        }, 300)
+        client.send(isJsonString ? data.toString() : data.toString())
       }
     })
   })
