@@ -4,8 +4,10 @@ const app = require('http').createServer(handler)
 const io = require('socket.io')(app, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST'],
   },
+    transports: [
+        'websocket'
+    ],
 })
 
 io.on('connection', function connect(socket) {
