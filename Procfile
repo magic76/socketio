@@ -1,1 +1,1 @@
-web: node ws.js
+web: NODE_ENV=production && node ws.js
