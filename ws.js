@@ -17,7 +17,6 @@ io.on('connection', function connect(socket) {
     roomId = info.roomId
   })
   socket.on('MESSAGE', function info(info) {
-    console.log('roomID', roomId)
     roomId && io.to(roomId).emit('MESSAGE', info)
   })
   socket.on('disconnect', function disconnect() {
