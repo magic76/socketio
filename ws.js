@@ -11,9 +11,7 @@ const io = require('socket.io')(app, {
 })
 
 io.on('connection', function connect(socket) {
-  console.log('socket.handshake.url', socket.handshake.url)
   let roomId = null
-
   socket.on('SUBSCRIBE', function subscribe(info) {
     socket.join(info.roomId)
     roomId = info.roomId
