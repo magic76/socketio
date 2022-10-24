@@ -1,26 +1,58 @@
 function handler(req, res) {}
 
+const EVENT_TYPE = {
+  CONNECTION: 'connection',
+  DISCONNECT: 'disconnect',
+  JOIN_ROOM: 'joinRoom',
+  SEND_PRIVATE_MESSAGE: 'sendPrivateMessage',
+  SEND_ROOM_MESSAGE: 'sendRoomMessage',
+}
+
 const app = require('http').createServer(handler)
 const io = require('socket.io')(app, {
   cors: {
     origin: '*',
+    methods: ['GET', 'POST'],
   },
-    transports: [
-        'websocket'
-    ],
 })
 
-io.on('connection', function connect(socket) {
-  let roomId = null
-  socket.on('SUBSCRIBE', function subscribe(info) {
-    socket.join(info.roomId)
-    roomId = info.roomId
+io.on(EVENT_TYPE.CONNECTION, (socket) => {
+  console.log(`User ${socket.userId} join ${socket.userId} room.`)
+  socket.join(socket.userId)
+
+  if (socket.roomId && socket.roomId !== socket.userId) {
+    console.log(`User ${socket.userId} join ${socket.roomId} room.`)
+    socket.join(socket.roomId)
+  }
+
+  socket.on(EVENT_TYPE.JOIN_ROOM, (roomId) => {
+    socket.join(roomId)
   })
-  socket.on('MESSAGE', function info(info) {
-    roomId && io.to(roomId).emit('MESSAGE', info)
+
+  socket.on(EVENT_TYPE.SEND_PRIVATE_MESSAGE, ({ content, to }) => {
+    const message = {
+      content,
+      from: socket.userId,
+      to,
+    }
+    socket.to(to).emit(EVENT_TYPE.SEND_PRIVATE_MESSAGE, message)
   })
-  socket.on('disconnect', function disconnect() {
-    console.log('user disconnected')
+
+  socket.on(EVENT_TYPE.SEND_ROOM_MESSAGE, ({ content, to }) => {
+    if (!to) {
+      to = socket.roomId
+    }
+
+    const message = {
+      content,
+      from: socket.userId,
+      to,
+    }
+    socket.to(to).emit(EVENT_TYPE.SEND_ROOM_MESSAGE, message)
+  })
+
+  socket.on(EVENT_TYPE.DISCONNECT, () => {
+    console.log(`User ${socket.userId} disconnected.`)
   })
 })
 const port = process.env.PORT || 8000
